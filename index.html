@@ -150,7 +150,7 @@
 
 
 
-        // use the Geolocation API to continuously track the current location
+        // use the Geolocation API to locate the current location when the Locate button is clicked
         if (navigator.geolocation) {
             var options = {
                 enableHighAccuracy: true,
@@ -159,45 +159,39 @@
             };
 
             // define a function to update the marker and map with the current location
-            function updateLocation(position) {
-                var lat = position.coords.latitude;
-                var lng = position.coords.longitude;
+            function updateLocation() {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
 
-                // set the marker's position to the current location
-                if (!marker) {
-                    marker = L.marker([lat, lng]).addTo(map);
-                }
+                    // set the marker's position to the current location
+                    if (!marker) {
+                        marker = L.marker([lat, lng]).addTo(map);
+                    }
 
-                marker.setLatLng([lat, lng]);
+                    marker.setLatLng([lat, lng]);
 
 
-                // center the map on the current location
-                map.setView([lat, lng], map.getZoom());
+                    // center the map on the current location
+                    map.setView([lat, lng], map.getZoom());
 
-                // display the latitude, longitude, and UTM coordinates in a popup
-                marker = L.marker([lat, lng]).addTo(map);
-
-                const [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(lat, lng);
-                marker.bindPopup(
-                    `Latitude: ${Latitude.toFixed(6)}<br>Longitude: ${Longitude.toFixed(6)}<br>Easting: ${Easting}<br>Northing: ${Northing}<br>UTM Zone: ${UTMZone}`
-                ).openPopup();
+                    // display the latitude, longitude, and UTM coordinates in a popup
+                    const [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(lat, lng);
+                    marker.bindPopup(
+                        `Latitude: ${Latitude.toFixed(6)}<br>Longitude: ${Longitude.toFixed(6)}<br>Easting: ${Easting}<br>Northing: ${Northing}<br>UTM Zone: ${UTMZone}`
+                    ).openPopup();
+                }, function (error) {
+                    console.log(error);
+                }, options);
             }
-
-            // watch the position continuously
-            var watchId = navigator.geolocation.watchPosition(updateLocation, function (error) {
-                console.log(error);
-            }, options);
 
             // create a "Locate" button that centers the map on the current location and updates the marker
             var locateButton = L.control({ position: 'topleft' });
             locateButton.onAdd = function (map) {
                 var button = L.DomUtil.create('button');
-                button.classList.add('btn', 'btn-outline-danger', 'btn-sm');
                 button.innerHTML = '📍';
                 button.onclick = function () {
-                    navigator.geolocation.getCurrentPosition(updateLocation, function (error) {
-                        console.log(error);
-                    }, options);
+                    updateLocation();
                 }
                 return button;
             }
@@ -205,6 +199,8 @@
         } else {
             alert("Geolocation is not supported by this browser.");
         }
+
+
         // add an event listener to the map to set a marker on click
         map.on('click', setMarkerOnClick);
 
