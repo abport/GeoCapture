@@ -7,6 +7,9 @@ This interactive map provides a range of base maps to choose from, and enables y
 
 Built using HTML, CSS, and JavaScript, the GeoCapture leverages the powerful Leaflet library to create and display the map, and uses the Proj4js library to convert latitude and longitude to Universal Transverse Mercator (UTM) coordinates.
 
+[![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)](https://aminbeheshti.com/projects/geocapture/)
+
+
 ## Features
 
 -   Interactive map with different base maps to choose from.
