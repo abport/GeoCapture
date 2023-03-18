@@ -1,7 +1,7 @@
 
 # GeoCapture
 
-Are you in need of a simple, web-based solution for capturing geographic information without access to a GPS device? Look no further than the GeoCapture!
+GeoCapture is your go-to tool for collecting geographic data on the go. No need for expensive professional GPS equipment or confusing mobile apps - with GeoCapture, you can easily capture the coordinates of any location using your phone or computer.
 
 This interactive map provides a range of base maps to choose from, and enables you to easily capture the coordinates of locations of interest. With just a few clicks, you can set markers, add descriptions, and save your data in a convenient CSV file.
 
@@ -33,7 +33,7 @@ Using GeoCapture is simple:
 
 ## Why I made this tool
 
-I created GeoCapture with the goal of providing an easy-to-use tool for anyone who needs to collect geographic data without access to professional GPS equipment. Whether you're out in the field without your GPS, or simply prefer to use your phone or computer to capture location data, this tool provides a simple and effective solution.
+As developers in the GIS department, we often need to collect the GIS coordinates of certain locations in the field. While we usually rely on professional GPS devices for such projects, sometimes we don't have access to them. In such situations, we have to resort to alternative methods, such as using mobile apps. However, I wanted to create my own tool that would be even simpler and more accessible. So I created GeoCapture with the goal of providing an easy-to-use tool for anyone who needs to collect geographic data without access to professional GPS equipment. Whether you're out in the field without your GPS, or simply prefer to use your phone or computer to capture location data, this tool provides a simple and effective solution.
 
 ## Contributing
 
