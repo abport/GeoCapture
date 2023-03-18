@@ -122,7 +122,6 @@
             marker = L.marker([lat, lng]).addTo(map);
 
             const [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(lat, lng);
-            
             marker.bindPopup(
                 `Latitude: ${Latitude.toFixed(7)}<br>Longitude: ${Longitude.toFixed(7)}<br>Easting: ${Easting}<br>Northing: ${Northing}<br>UTM Zone: ${UTMZone}`
             ).openPopup();
