@@ -1,4 +1,5 @@
 
+
 # GeoCapture
 
 GeoCapture is your go-to tool for collecting geographic data on the go. No need for expensive professional GPS equipment or confusing mobile apps - with GeoCapture, you can easily capture the coordinates of any location using your phone or computer.
@@ -9,6 +10,7 @@ Built using HTML, CSS, and JavaScript, the GeoCapture leverages the powerful Lea
 
 [![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)](https://aminbeheshti.com/projects/geocapture/)
 
+![enter image description here](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot.jpg?raw=true)
 
 ## Features
 
