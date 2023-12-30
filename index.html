@@ -17,6 +17,11 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     />
+    <!-- Load FontAwesome from CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <!-- Load Proj4js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.0/proj4.js"></script>
@@ -50,13 +55,18 @@
       .btnDelete {
         font-size: x-small;
       }
+      /* Remove background from FontAwesome icons */
+      .leaflet-marker-draggable {
+        background: transparent !important;
+        border: none !important;
+      }
     </style>
   </head>
   <body>
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-12">
-          <div id="map" style="height: 600px"></div>
+          <div id="map" style="height: 550px"></div>
         </div>
         <div class="col-lg-12">
           <div id="table-container ooo">
@@ -149,85 +159,104 @@
 
       var marker = null;
 
-      function setMarkerOnClick(e) {
-        // get the latitude and longitude of the clicked location
-        const { lat, lng } = e.latlng;
+      // Function to add a draggable marker with the custom icon
+      function addDraggableMarker(map, coordinates) {
+        var faIcon = L.divIcon({
+          html: '<i class="fas fa-long-arrow-alt-up fa-4x" style="color:red;"></i>',
+          iconSize: [30, 30],
+          iconAnchor: [12, 3], // X is half the width, Y is the full height
+        });
 
-        // create a new marker at the clicked location
-        if (marker) {
-          map.removeLayer(marker);
+        var marker = L.marker(coordinates, {
+          icon: faIcon,
+          draggable: true,
+        }).addTo(map);
+
+        // Event listener for end of dragging
+        marker.on("dragend", function (event) {
+          var position = marker.getLatLng();
+          setMarkerOnClick({ latlng: position }, true); // Pass the position and true to indicate a drag event
+        });
+
+        return marker;
+      }
+
+      // Initialize the draggable marker at the map center
+      var draggableMarker = addDraggableMarker(map, map.getCenter());
+
+      function setMarkerOnClick(e, isDrag = false) {
+        // Get the latitude and longitude of the clicked or dragged location
+        var { lat, lng } = e.latlng;
+        
+        // Move the draggable marker to that location if it is not originating from a drag event
+        if (!isDrag) {
+          draggableMarker.setLatLng(new L.LatLng(lat, lng));
         }
+        
+        // Update global lat and lng variables (declared outside of this function)
+        lastClickedLat = lat;
+        lastClickedLng = lng;
 
-        // display the latitude, longitude, and UTM coordinates in a popup
-        marker = L.marker([lat, lng]).addTo(map);
+        // Create the popup content each time to ensure fresh data is used
+        draggableMarker.bindPopup(createPopupContent(lat, lng)).openPopup();
+      }
 
-        const [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(
-          lat,
-          lng
-        );
-        marker
-          .bindPopup(
-            `Latitude: ${Latitude.toFixed(7)}<br>Longitude: ${Longitude.toFixed(
-              7
-            )}<br>Easting: ${Easting}<br>Northing: ${Northing}<br>UTM Zone: ${UTMZone}`
-          )
-          .openPopup();
+      function createPopupContent(lat, lng) {
+        // Generate the UTM information based on the latest coordinates
+        var [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(lat, lng);
+        
+        // Create the popup HTML with an "Add to List" button
+        var popupContent = `
+        <p>Latitude: ${Latitude.toFixed(7)}<br>
+        Longitude: ${Longitude.toFixed(7)}<br>
+        Easting: ${Easting}<br>
+        Northing: ${Northing}<br>
+        UTM Zone: ${UTMZone}</p>
+        <button onclick='addToTableWithPrompt(${Latitude}, ${Longitude}, ${Easting}, ${Northing}, "${UTMZone}")' class="btn btn-primary btn-sm">Add to List</button>`;
+        
+        return popupContent;
+      }
 
-        // add the location to the table
+      function addToTableWithPrompt(Latitude, Longitude, Easting, Northing, UTMZone) {
+        var Description = prompt("Please enter a description", "");
+        if (Description != null) {
+          addToTable(Description, Latitude, Longitude, Easting, Northing, UTMZone);
+        }
+      }
+
+      function addToTable(Description, Latitude, Longitude, Easting, Northing, UTMZone) {
+        // Use the parameters to add the data to the table directly
         var tableBody = document.querySelector("#locationsTable tbody");
         var newRow = tableBody.insertRow();
         var descriptionCell = newRow.insertCell();
         var latCell = newRow.insertCell();
         var lngCell = newRow.insertCell();
         var utmCell = newRow.insertCell();
-        descriptionCell.contentEditable = true; // allow the user to enter a description
-        latCell.textContent = lat.toFixed(7);
-        lngCell.textContent = lng.toFixed(7);
-        utmCell.textContent = `${Easting}, ${Northing}, ${UTMZone}`;
-        addDeleteButton(newRow); // add a delete button to the new row
+        var deleteCell = newRow.insertCell();
+
+        descriptionCell.contentEditable = true;
+        // descriptionCell.innerText = "Description"; // Placeholder text
+        descriptionCell.innerText = Description; // Use the provided description
+        latCell.innerText = Latitude.toFixed(7);
+        lngCell.innerText = Longitude.toFixed(7);
+        utmCell.innerText = `${Easting}, ${Northing}, ${UTMZone}`;
+
+        // Add Delete Button
+        var deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn", "btn-danger", "btn-sm", "btnDelete");
+        deleteButton.innerText = "Delete";
+        deleteButton.onclick = function() {
+          tableBody.removeChild(newRow);
+        };
+        deleteCell.appendChild(deleteButton);
       }
 
       function addDeleteButton(row) {
         var deleteButtonCell = row.insertCell();
-
-        // add the center button
-        var centerButton = document.createElement("button");
-        centerButton.textContent = "Center";
-        centerButton.classList.add("btn", "btn-primary", "btn-sm", "btnCenter");
-        centerButton.addEventListener("click", function () {
-          var lat = row.cells[1].textContent;
-          var lng = row.cells[2].textContent;
-          map.setView([lat, lng], map.getZoom());
-          if (marker) {
-            map.removeLayer(marker);
-          }
-          marker = L.marker([lat, lng]).addTo(map);
-          const utmContent = row.cells[3].textContent;
-          const [Easting, Northing, Zone] = utmContent.split(",");
-
-          marker
-            .bindPopup(
-              "Latitude: " +
-                lat +
-                "<br>Longitude: " +
-                lng +
-                "<br>Easting: " +
-                Easting +
-                "<br>Northing: " +
-                Northing +
-                "<br>UTM Zone: " +
-                Zone +
-                row.cells[0].textContent
-            )
-            .openPopup();
-        });
-        deleteButtonCell.appendChild(centerButton);
-
-        // add the delete button
         var deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
         deleteButton.classList.add("btn", "btn-danger", "btn-sm", "btnDelete");
-        deleteButton.addEventListener("click", function () {
+        deleteButton.addEventListener('click', function() {
           row.remove();
         });
         deleteButtonCell.appendChild(deleteButton);
