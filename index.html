@@ -60,6 +60,15 @@
         background: transparent !important;
         border: none !important;
       }
+      .ab-btn-googlemaps {
+        margin: 5px;
+      }
+      .small-text {
+        font-size: 12px; /* or any size you prefer */
+      }
+      .buttomBtns {
+        padding-bottom: 15px;
+      }
     </style>
   </head>
   <body>
@@ -88,7 +97,17 @@
               </table>
             </div>
           </div>
-          <button id="save-btn" class="btn btn-primary">Save to CSV</button>
+          <div class="buttomBtns">
+            <button id="save-btn" class="btn btn-primary btn-sm small-text">
+              Save to CSV
+            </button>
+            <button id="copy-btn" class="btn btn-primary btn-sm small-text">
+              Copy All
+            </button>
+            <button id="save-txt-btn" class="btn btn-primary btn-sm small-text">
+              Save to TXT
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -187,12 +206,12 @@
       function setMarkerOnClick(e, isDrag = false) {
         // Get the latitude and longitude of the clicked or dragged location
         var { lat, lng } = e.latlng;
-        
+
         // Move the draggable marker to that location if it is not originating from a drag event
         if (!isDrag) {
           draggableMarker.setLatLng(new L.LatLng(lat, lng));
         }
-        
+
         // Update global lat and lng variables (declared outside of this function)
         lastClickedLat = lat;
         lastClickedLng = lng;
@@ -203,8 +222,11 @@
 
       function createPopupContent(lat, lng) {
         // Generate the UTM information based on the latest coordinates
-        var [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(lat, lng);
-        
+        var [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(
+          lat,
+          lng
+        );
+
         // Create the popup HTML with an "Add to List" button
         var popupContent = `
         <p>Latitude: ${Latitude.toFixed(7)}<br>
@@ -213,18 +235,38 @@
         Northing: ${Northing}<br>
         UTM Zone: ${UTMZone}</p>
         <button onclick='addToTableWithPrompt(${Latitude}, ${Longitude}, ${Easting}, ${Northing}, "${UTMZone}")' class="btn btn-primary btn-sm">Add to List</button>`;
-        
+
         return popupContent;
       }
 
-      function addToTableWithPrompt(Latitude, Longitude, Easting, Northing, UTMZone) {
+      function addToTableWithPrompt(
+        Latitude,
+        Longitude,
+        Easting,
+        Northing,
+        UTMZone
+      ) {
         var Description = prompt("Please enter a description", "");
         if (Description != null) {
-          addToTable(Description, Latitude, Longitude, Easting, Northing, UTMZone);
+          addToTable(
+            Description,
+            Latitude,
+            Longitude,
+            Easting,
+            Northing,
+            UTMZone
+          );
         }
       }
 
-      function addToTable(Description, Latitude, Longitude, Easting, Northing, UTMZone) {
+      function addToTable(
+        Description,
+        Latitude,
+        Longitude,
+        Easting,
+        Northing,
+        UTMZone
+      ) {
         // Use the parameters to add the data to the table directly
         var tableBody = document.querySelector("#locationsTable tbody");
         var newRow = tableBody.insertRow();
@@ -235,20 +277,80 @@
         var deleteCell = newRow.insertCell();
 
         descriptionCell.contentEditable = true;
-        // descriptionCell.innerText = "Description"; // Placeholder text
         descriptionCell.innerText = Description; // Use the provided description
         latCell.innerText = Latitude.toFixed(7);
         lngCell.innerText = Longitude.toFixed(7);
         utmCell.innerText = `${Easting}, ${Northing}, ${UTMZone}`;
 
+        // Add Center Button
+        var centerButton = document.createElement("button");
+        centerButton.classList.add("btn", "btn-primary", "btn-sm", "btnCenter");
+        centerButton.innerHTML = '<i class="fas fa-map-marker-alt"></i>'; // Font Awesome copy icon
+        centerButton.onclick = function () {
+          // Set the map view to the coordinates
+          map.setView([Latitude, Longitude], map.getZoom());
+
+          // Set the draggable marker to the coordinates
+          draggableMarker.setLatLng([Latitude, Longitude]);
+
+          // Create the popup content
+          var popupContent = createPopupContent(Latitude, Longitude);
+
+          // Bind the popup to the draggable marker and open it
+          draggableMarker.bindPopup(popupContent).openPopup();
+        };
+        deleteCell.appendChild(centerButton);
+
         // Add Delete Button
         var deleteButton = document.createElement("button");
         deleteButton.classList.add("btn", "btn-danger", "btn-sm", "btnDelete");
-        deleteButton.innerText = "Delete";
-        deleteButton.onclick = function() {
-          tableBody.removeChild(newRow);
+        deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteButton.onclick = function () {
+          // Add this line to confirm deletion
+          if (confirm("Are you sure you want to delete this row?")) {
+            tableBody.removeChild(newRow);
+          }
         };
         deleteCell.appendChild(deleteButton);
+
+        // Add Open in Maps Button
+        var mapsButton = document.createElement("button");
+        mapsButton.classList.add(
+          "btn",
+          "btn-info",
+          "btn-sm",
+          "btnMaps",
+          "ab-btn-googlemaps"
+        );
+        mapsButton.innerHTML = '<i class="fab fa-google"></i>'; // Font Awesome map marker icon
+        // mapsButton.onclick = function () {
+        //   var mapsUrl = `https://www.google.com/maps/search/?api=1&query=${Latitude},${Longitude}`;
+        //   window.open(mapsUrl, "_blank");
+        // };
+        mapsButton.onclick = function () {
+          var mapsUrl = `https://www.google.com/maps/search/?api=1&query=${Latitude},${Longitude}`;
+
+          // Notify the user
+          if (
+            window.confirm(
+              "Clicking OK will copy the Google Maps link to the clipboard and open the location in Google Maps."
+            )
+          ) {
+            // Copy the Google Maps URL to the clipboard
+            navigator.clipboard.writeText(mapsUrl).then(
+              function () {
+                console.log("Copying to clipboard was successful!");
+              },
+              function (err) {
+                console.error("Could not copy text: ", err);
+              }
+            );
+
+            // Open the Google Maps URL in a new tab
+            window.open(mapsUrl, "_blank");
+          }
+        };
+        deleteCell.appendChild(mapsButton);
       }
 
       function addDeleteButton(row) {
@@ -256,7 +358,7 @@
         var deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
         deleteButton.classList.add("btn", "btn-danger", "btn-sm", "btnDelete");
-        deleteButton.addEventListener('click', function() {
+        deleteButton.addEventListener("click", function () {
           row.remove();
         });
         deleteButtonCell.appendChild(deleteButton);
@@ -287,20 +389,14 @@
               // center the map on the current location
               map.setView([lat, lng], map.getZoom());
 
-              // display the latitude, longitude, and UTM coordinates in a popup
-              const [Latitude, Longitude, Easting, Northing, UTMZone] = getUTM(
-                lat,
-                lng
-              );
-              marker
-                .bindPopup(
-                  `Latitude: ${Latitude.toFixed(
-                    6
-                  )}<br>Longitude: ${Longitude.toFixed(
-                    6
-                  )}<br>Easting: ${Easting}<br>Northing: ${Northing}<br>UTM Zone: ${UTMZone}`
-                )
-                .openPopup();
+              // Move the draggable marker to the current location
+              draggableMarker.setLatLng([lat, lng]);
+
+              // Create the popup content
+              var popupContent = createPopupContent(lat, lng);
+
+              // Bind the popup to the draggable marker and open it
+              draggableMarker.bindPopup(popupContent).openPopup();
             },
             function (error) {
               console.log(error);
@@ -313,10 +409,13 @@
         var locateButton = L.control({ position: "topleft" });
         locateButton.onAdd = function (map) {
           var button = L.DomUtil.create("button");
-          button.innerHTML = "📍";
+          button.innerHTML = '<i class="fas fa-crosshairs fa-2x"></i>';
           button.onclick = function () {
             updateLocation();
           };
+          button.addEventListener("click", function (e) {
+            L.DomEvent.stopPropagation(e);
+          });
           return button;
         };
         locateButton.addTo(map);
@@ -359,6 +458,69 @@
         a.click();
         URL.revokeObjectURL(url);
       });
+
+      const copyBtn = document.getElementById("copy-btn");
+
+      copyBtn.addEventListener("click", () => {
+        let tableRows = [];
+        for (let i = 0; i < table.rows.length; i++) {
+          const row = table.rows[i];
+          let rowData = [];
+          for (let j = 0; j < row.cells.length - 1; j++) {
+            const cell = row.cells[j];
+            rowData.push(cell.innerText);
+          }
+          tableRows.push(rowData.join(","));
+        }
+        const tableData = tableRows.join("\n");
+        navigator.clipboard.writeText(tableData).then(
+          () => {
+            // alert("Data copied to clipboard!");
+            // Show the alert and hide it after 3 seconds
+            var copyAlert = document.getElementById("copy-alert");
+            copyAlert.style.display = "block";
+            setTimeout(function () {
+              copyAlert.style.display = "none";
+            }, 3000);
+          },
+          (err) => {
+            console.error("Failed to copy: ", err);
+          }
+        );
+      });
+
+      const saveTxtBtn = document.getElementById("save-txt-btn");
+
+      saveTxtBtn.addEventListener("click", () => {
+        let tableRows = [];
+        for (let i = 0; i < table.rows.length; i++) {
+          const row = table.rows[i];
+          let rowData = [];
+          for (let j = 0; j < row.cells.length - 1; j++) {
+            const cell = row.cells[j];
+            rowData.push(cell.innerText);
+          }
+          tableRows.push(rowData.join(","));
+        }
+        const tableData = tableRows.join("\n");
+        const blob = new Blob([tableData], {
+          type: "text/plain;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "table.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
     </script>
+    <div
+      id="copy-alert"
+      class="alert alert-success fixed-top mb-0 rounded-0"
+      role="alert"
+      style="display: none"
+    >
+      Data copied to clipboard!
+    </div>
   </body>
 </html>
