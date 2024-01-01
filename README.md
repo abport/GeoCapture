@@ -5,9 +5,10 @@ GeoCapture is the ideal solution for geographic data collection on the move, pro
 
 Leveraging the powerful Leaflet library for interactive mapping and the Proj4js library for coordinate conversions, GeoCapture is built with HTML, CSS, and JavaScript for a seamless user experience.
 
-![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)(https://aminbeheshti.com/projects/geocapture/)
+[![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)](https://aminbeheshti.com/projects/geocapture/)
 
-![Screenshot](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot2.jpg?raw=true)(https://aminbeheshti.com/projects/geocapture/)
+
+[![Live Preview](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot2.jpg?raw=true)](https://aminbeheshti.com/projects/geocapture/)
 
 ### Features
 
