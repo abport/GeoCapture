@@ -1,53 +1,53 @@
 
-
 # GeoCapture
 
-GeoCapture is your go-to tool for collecting geographic data on the go. No need for expensive professional GPS equipment or confusing mobile apps - with GeoCapture, you can easily capture the coordinates of any location using your phone or computer.
+GeoCapture is the ideal solution for geographic data collection on the move, providing an easy-to-use interface for capturing location coordinates directly from your phone or computer. Say goodbye to pricey, complicated GPS equipment and hello to GeoCapture's interactive map and simple data storage.
 
-This interactive map provides a range of base maps to choose from, and enables you to easily capture the coordinates of locations of interest. With just a few clicks, you can set markers, add descriptions, and save your data in a convenient CSV file.
+Leveraging the powerful Leaflet library for interactive mapping and the Proj4js library for coordinate conversions, GeoCapture is built with HTML, CSS, and JavaScript for a seamless user experience.
 
-Built using HTML, CSS, and JavaScript, the GeoCapture leverages the powerful Leaflet library to create and display the map, and uses the Proj4js library to convert latitude and longitude to Universal Transverse Mercator (UTM) coordinates.
+![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)(https://aminbeheshti.com/projects/geocapture/)
 
-[![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)](https://aminbeheshti.com/projects/geocapture/)
+![Screenshot](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot2.jpg?raw=true)(https://aminbeheshti.com/projects/geocapture/)
 
-[![Live Preview](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot2.jpg?raw=true)](https://aminbeheshti.com/projects/geocapture/)
-## Features
+### Features
 
--   Interactive map with different base maps to choose from.
--   Geolocation functionality enabled to find the user's current location.
--   Ability to set markers and get the latitude, longitude, and UTM coordinates of the location.
--   Table to store the location information, including description, latitude, longitude, and UTM.
--   Ability to add description to the points and delete them in the table.
--   Option to save the information in a CSV file.
+- Interactive map featuring a range of base maps, including OpenStreetMap, TracesTrack Topo, Google Street, and Google Satellite.
+- Geolocation capability to pinpoint the user's current position and update the map accordingly.
+- A draggable, custom icon marker that provides updated coordinates and UTM conversion in a popup when moved.
+- A table that stores location information with options for editable descriptions.
+- Functionality to add locations from the map directly into the table with a simple button click.
+- Options to save captured data to CSV or TXT files and a copy-to-clipboard feature for table data.
 
-## How to use
+### Enhanced User Experience
 
-Using GeoCapture is simple:
+- Live location tracking with a custom 'Locate' button to find and update the user's current location on the map.
+- Mobile responsive design with Bootstrap, ensuring the tool is accessible on various devices.
+- A feedback alert system informing when the data is copied to the clipboard.
 
-1.  Clone or download the repository to your local machine.
-2.  Open the `index.html` file in your web browser.
-3.  Allow the application to access your location if prompted.
-4.  Click on the map to set a marker at the desired location.
-5.  Enter a description of the location in the table.
-6.  Edit or delete the location information as required.
-7.  Click the `Save to CSV` button to download the location information in a CSV file.
+### How to Use
 
-## Why I made this tool
+- Clone or download the repository onto your local machine.
+- Open the `index.html` file in a web browser to access GeoCapture.
+- Grant location permissions to enable current location tracking when prompted.
+- Interact with the map to set markers and acquire location data.
+- Customize the location descriptions directly in the table.
+- Use in-built buttons to save data in the preferred format or copy to clipboard.
 
-As developers in the GIS department, we often need to collect the GIS coordinates of certain locations in the field. While we usually rely on professional GPS devices for such projects, sometimes we don't have access to them. In such situations, we have to resort to alternative methods, such as using mobile apps. However, I wanted to create my own tool that would be even simpler and more accessible. So I created GeoCapture with the goal of providing an easy-to-use tool for anyone who needs to collect geographic data without access to professional GPS equipment. Whether you're out in the field without your GPS, or simply prefer to use your phone or computer to capture location data, this tool provides a simple and effective solution.
+### Why GeoCapture
 
-## Contributing
+GeoCapture is designed to be an accessible and cost-effective alternative to traditional GPS devices. It's perfect for users from various domains needing to collect and store geographic data effortlessly.
 
-Contributions are welcome! If you find any issues with the code or have ideas on how to improve it, please feel free to submit a pull request or open an issue.
+### Contributing
 
-## Credits
+Contributions to enhance GeoCapture are always welcome. Feel free to submit pull requests or raise issues to suggest improvements.
 
-GeoCapture was built using the following libraries:
+### Credits
 
--   [Leaflet](https://leafletjs.com/) - for creating and displaying the map.
--   [Bootstrap](https://getbootstrap.com/) - for styling the user interface.
--   [Proj4js](https://github.com/proj4js/proj4js) - for converting latitude and longitude to UTM coordinates.
+- [Leaflet](https://leafletjs.com/) - Interactive maps
+- [Bootstrap](https://getbootstrap.com/) - Responsive styling
+- [Proj4js](https://github.com/proj4js/proj4js) - Coordinate conversion
+- [FontAwesome](https://fontawesome.com/) - Icons
 
-## License
+### License
 
 GeoCapture is licensed under the [MIT License](https://opensource.org/licenses/MIT).
