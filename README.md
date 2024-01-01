@@ -10,7 +10,7 @@ Built using HTML, CSS, and JavaScript, the GeoCapture leverages the powerful Lea
 
 [![Live Preview](https://img.shields.io/badge/Live%20Preview-View%20Now-brightgreen)](https://aminbeheshti.com/projects/geocapture/)
 
-[![Live Preview](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot.jpg?raw=true)](https://aminbeheshti.com/projects/geocapture/)
+[![Live Preview](https://github.com/abport/GeoCapture/blob/main/geocapture_screenshot2.jpg?raw=true)](https://aminbeheshti.com/projects/geocapture/)
 ## Features
 
 -   Interactive map with different base maps to choose from.
