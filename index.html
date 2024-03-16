@@ -127,11 +127,11 @@
         }
       ).addTo(map);
 
-      // Add the new Tracestrack Topo base map layer
-      var tracestrackTopo = L.tileLayer(
-        "https://tile.tracestrack.com/topo__/{z}/{x}/{y}.png?key=d9344714a8fbf28773ce4c955ea8adfb",
+      // Add the new OSM Humanitarian base map layer
+      var osmHumanitarian = L.tileLayer(
+        "https://tile-c.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         {
-          attribution: "&copy; TracesTrack Topo", // Add appropriate attribution
+          attribution: "&copy; OSM Humanitarian", // Add appropriate attribution
           maxZoom: 19, // you can set the maxZoom level if it's known
         }
       );
@@ -157,7 +157,7 @@
       // create an object with the basemap names and layers
       var baseMaps = {
         OpenStreetMap: openStreetMap,
-        "TracesTrack Topo": tracestrackTopo, // Add the new base map layer to the control layers
+        "OSM Humanitarian": osmHumanitarian, // Add the new base map layer to the control layers
         "Google Street": googleStreetMap,
         "Google Satellite": googleSatelliteMap,
       };
